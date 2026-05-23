@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  name        String
+  description String
+  price       Int      // Stored in paise (₹1 = 100)
+  unit        String   // e.g. "500g"
+  category    String   // SWEET, KOVA, HOT
+  badge       String?  // Bestseller, New, etc.
+  image       String   // Main image URL
+  stockStatus String   @default("IN_STOCK") // IN_STOCK, OUT
+  createdAt   DateTime @default(now())
+}
+
+model Order {
+  id             String   @id @default(uuid())
+  orderId        String   @unique @default(cuid()) // Short user-facing ID
+  status         String   @default("PENDING") // PENDING, CONFIRMED
+  totalAmount    Int
+  items          String   // JSON string of cart items
+  customerName   String
+  customerPhone  String
+  address        String
+  paymentMethod  String   // COD, UPI
+  idempotencyKey String?  @unique
+  createdAt      DateTime @default(now())
+}
